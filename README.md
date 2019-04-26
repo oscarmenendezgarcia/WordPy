@@ -1,3 +1,3 @@
 # WordPy
 
-Small side proyect to test speech to test apis from google and then generate different data visualizations.
+Small side proyect to test speech to text google API and then generate different data visualizations.
