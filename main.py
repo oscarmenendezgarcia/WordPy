@@ -3,15 +3,13 @@ import speech_recognition as sr
 from wordcloud import WordCloud
 from matplotlib import pyplot as plt
 
-spanish_prepositions = [ "a", "ante", "bajo", "cabo", "con", "contra", "de", "desde", "durante", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "son", "sobre", "tras"]
-
-def download_audio(url, lang="es"):
+def download_audio(url, lang="en"):
         ops = {
-                'outtmpl': 'tmp.wav',
+                'outtmpl': 'tmp.fac',
                 "format" : "bestaudio/best",                
                 "postprocessors": [{
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "wav",
+                "key": "",
+                "preferredcodec": "flac",
                 "preferredquality": "320",
         }],
         }
@@ -23,7 +21,8 @@ def transcribe_audio(path):
         audioFile = sr.AudioFile(path)
         with audioFile as source:
                 try:
-                        audio = r.record(source, duration=120, offset=30)
+                        r.adjust_for_ambient_noise(source,duration=5)
+                        audio = r.record(source)
                         return r.recognize_google(audio, language="es-ES")
                 except sr.UnknownValueError:
                         print("Google Speech Recognition could not understand audio")
@@ -33,15 +32,16 @@ def transcribe_audio(path):
 
 
 def create_visualization(text):
-        wordcloud = WordCloud(background_color="white").generate(text)
+        stop_words = { "a", "ante", "bajo", "cabo", "con", "contra", "de", "desde", "durante", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "son", "sobre", "tras", "el", "la", "los", "las"}
+        wordcloud = WordCloud(background_color="white", stopwords=stop_words).generate(text)
         plt.imshow(wordcloud, interpolation='bilinear')
         plt.axis("off")
         plt.show()
 
 
 url = "https://www.youtube.com/watch?v=8qerVyCdlg4"
-path = "tmp.wav"
+path = "tmp.flac"
 
-download_audio(url)
+# download_audio(url)
 text = transcribe_audio(path)
 create_visualization(text)

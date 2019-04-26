@@ -12,6 +12,8 @@ speechrecognition = "*"
 wordcloud = "*"
 pyplot = "*"
 matplotlib = "*"
+pydub = "*"
+google-cloud = "*"
 
 [requires]
 python_version = "3.7"
