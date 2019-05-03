@@ -19,19 +19,23 @@ def download_audio(url, lang="en"):
 def transcribe_audio(path):
         r = sr.Recognizer()
         with sr.AudioFile(path) as source:
-                try:
-                        r.adjust_for_ambient_noise(source)
-                        r.dynamic_energy_threshold = True
-                        text = ""
-                        for x in range (0,8):
-                                audio = r.record(source, offset=x*10, duration=10)
-                                text += " " + r.recognize_google(audio, language="es-ES")
-                        return text
-                except sr.UnknownValueError:
-                        print("Google Speech Recognition could not understand audio")
-                except sr.RequestError as e:
-                        print("Could not request results from Google Speech Recognition service; {0}".format(e))
-
+                r.adjust_for_ambient_noise(source)
+                r.dynamic_energy_threshold = True
+                text = ""
+                offs = -10
+                isOver = False
+                while isOver is False:
+                        try:
+                                offs += 10
+                                audio = r.record(source, offset=offs, duration=10)
+                                if audio is None: 
+                                        isOver = True
+                                text += " " + r.recognize_google(audio, language="es-ES") 
+                        except sr.UnknownValueError:
+                                print("Google Speech Recognition could not understand audio")
+                        except sr.RequestError as e:
+                                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+                return text
 
 
 def create_visualization(text):
